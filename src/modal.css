@@ -1,0 +1,90 @@
+.close-btn{
+    /* // Set the desired color for the close button (cross x) */
+    color: #ffffff; 
+    background-color: transparent;
+    font-size: 40px;
+    border: 0px;
+}
+
+.add-button{
+    background: #202b60;
+    border-radius: 10px;
+    border: 1.5px solid #5E5E5E;
+    cursor: pointer;
+    color: #c6c6c6;
+    padding: 10px;
+}
+
+.form-control-custom{
+    background-color: #202B60;
+    color: #c6c6c6;
+    border: 2px solid #5E5E5E;
+}
+
+.form-control-custom::placeholder {
+    color: #6A727C;
+}
+
+.form-control-custom:focus{
+    background-color: #202B60;
+    color: #c6c6c6
+}
+
+/* .form-select {
+    background-color: #202B60;
+    color: #202B60;
+    border: 2px solid #5E5E5E;
+}
+
+.form-select::placeholder {
+    color: #6A727C;
+} */
+
+.custom-select {
+    background-color: #202B60;
+    background-size: 15px;
+    --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23c6c6c6%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e);
+    color: #c6c6c6; /* Change the color of the URL text */
+}
+
+.custom-select::placeholder {
+    color:  #6A727C;
+}
+
+.custom-select:focus {
+    background-color: #16204E;
+}
+
+.custom-select:active,
+.custom-select:focus {
+    background-color:  #16204E;
+    color: #c6c6c6;
+}
+
+/* .custom-select::after {
+    font-size: 20px;
+    color: red; /* Set the desired color for the dropdown icon */
+   /* }  */
+.modal{
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .modal-dialog .modal-content{
+    --bs-modal-bg: #1A2455;
+  }
+
+ .modal-header .btn-close {
+    font-size: 18px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23c6c6c6'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+  }
+
+.modal-text{
+    color: #c6c6c6;
+}
+
+.form-control::placeholder{
+    color: #4C5671 !important;
+}
+
+.my-custom-select__single-value {
+    color: unset !important;
+}
