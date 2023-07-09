@@ -117,9 +117,38 @@ const assetsTypesOption = [
   },
 ];
 
-export default function CustomizedTables({todos, handleModalOpen}) {
+export default function CustomizedTables({todos, handleModalOpen, input}) {
+
+  // Search for one key & one column in todos
+  // const filteredData = todos.filter((el) => {
+  //   if(input === ''){
+  //     return el
+  //   }else {
+  //     console.log("el",el,"--",`${el.brand && el.brand.toLowerCase().includes(input.toLowerCase())}`,input.toLowerCase())
+  //     // return el.brand && el.brand.toLowerCase().includes(input.toLowerCase());
+  //     return el.oem && el.oem.includes(input);
+  //   }
+  // })
   
+  // console.log("input",input)
+  // console.log("keys======>", Object.keys(todos));
+
+  // Search for all columns & public search in todos
+  const filteredData = todos.filter((todo) => {
+    for (const key in todo) {
+      const value = todo[key];
+      // console.log("value==",value,"===",key)
+      if (typeof value === 'string' && value.toLowerCase().includes(input.toLowerCase())) {
+        return true;
+      }
+      if (key === 'oem' && typeof value === 'number' && value.toString().includes(input.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
+  });
   
+  console.log("filteredData==", filteredData);
 
   return (
     <>
@@ -182,8 +211,8 @@ export default function CustomizedTables({todos, handleModalOpen}) {
             </TableRow>
           </TableHead>
           <TableBody >
-          {todos?.length > 0 &&
-            todos.map((todo, index)=> (
+          {filteredData?.length > 0 &&
+            filteredData.map((todo,index)=> (
                       <StyledTableRow
                         key={index}
                         sx={{
@@ -192,7 +221,6 @@ export default function CustomizedTables({todos, handleModalOpen}) {
                       >
                         {Object.values(todo).map((t,k) => 
                           k !==0 && (
-                            <>
                               <TableCell
                                 key={k}
                                 sx={{
@@ -202,7 +230,6 @@ export default function CustomizedTables({todos, handleModalOpen}) {
                               >
                                 {t}
                               </TableCell>
-                            </>
                           )
                         )}
                         <TableCell

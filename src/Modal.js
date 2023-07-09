@@ -4,49 +4,51 @@ import ImageUploadCard from "./ImageUpload";
 import Select from "react-select";
 import "./modal.css";
 
-const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) => {
-  const modalRef = useRef();
-  const [formvalue, setFormvalue] = useState({
-    cargotype: "",
-    carring: "",
-    vehicleWidth: "",
-    assetType: "",
-    brand: "",
-    vehiclepno: "",
-    baseline: "",
-    vehicleHeight: "",
-    vehicleWeight: "",
-    fuelType: "",
-    model: "",
-    vinNo: "",
-    fueltankc: "",
-    id: todos.length + 1,
-  });
+const initialFormValues = {
+  cargotype: "",
+  carring: "",
+  vehicleWidth: "",
+  assetType: "",
+  brand: "",
+  plateno: "",
+  baseline: "",
+  vehicleHeight: "",
+  vehicleWeight: "",
+  fueltype: "",
+  model: "",
+  vinNo: "",
+  fueltankc: "",
+  id: null,
+};
 
+const AddVehicleModal = ({handleModalClose, showModal, todos, handleAddTodo,}) => {
+  const modalRef = useRef();
+  const [formvalue, setFormvalue] = useState({ ...initialFormValues });  
   const [formerror, setFormerror] = useState({});
-  const [issubmit, setSubmit] = useState(false);
-  const [assetTypeError, setAssetTypeError] = useState("");
-  const [fuelTypeError, setFuelTypeError] = useState("");
-  const [selectedAssetType, setSelectedAssetType] = useState(null);
-  const [selectedFuelType, setSelectedFuelType] = useState(null);
 
   const handlevalidation = (e) => {
     const { name, value } = e.target;
     // setFormvalue({ ...formvalue, [name]: value });
     setFormvalue((prevFormValue) => ({
       ...prevFormValue,
-      [name]: value
+      [name]: value,
     }));
-    // Reset the select box error when it's changed
-    if (name === "assetType") {
-      setAssetTypeError("");
-      setSelectedAssetType(value);
-    }
+  };
 
-    if (name === "fuelType") {
-      setFuelTypeError("");
-      setSelectedFuelType(value);
-    }
+  const handleAssetTypeChange = (selectedOption) => {
+    setFormvalue((prevState) => ({
+      ...prevState,
+      assetType: selectedOption.value,
+    }));
+    console.log("assetType", selectedOption);
+  };
+
+  const handleFuelTypeChange = (selectedOption) => {
+    setFormvalue((prevState) => ({
+      ...prevState,
+      fueltype: selectedOption.value,
+    }));
+    console.log("fuelType", selectedOption);
   };
 
   const handlesubmit = (e) => {
@@ -54,58 +56,52 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
     const formErrors = validationform(formvalue);
     setFormerror(formErrors);
 
-    setSubmit(true);
-    const grouping = selectedAssetType ? selectedAssetType.value : "";
-    const fueltype = selectedFuelType ? selectedFuelType.value : "";
-    console.log("formvalue:", formvalue);
-    console.log("selectedAssetType:", selectedAssetType);
-    console.log("selectedFuelType:", selectedFuelType);
-    // Create a newTodo object with form values
-    const newTodo = {
-        id: formvalue.id,
-      company: formvalue.baseline,
-      grouping: grouping,
-      plateno: formvalue.vehiclepno,
-      model: formvalue.model,
-      cargotype: formvalue.cargotype,
-      fueltype: fueltype,
-      brand: formvalue.brand,
-      oem: formvalue.vinNo,
-      gps: formvalue.gps,
-      canbus: formvalue.canbus,
-    };
-    console.log("id==",newTodo)
-    // Call the handleAddTodo function from props to update the todos state in the parent component
-    handleAddTodo(newTodo, () => {
-      setTimeout(() => {
-        setFormvalue({
-          cargotype: "",
-          carring: "",
-          vehicleWidth: "",
-          assetType: "",
-          brand: "",
-          vehiclepno: "",
-          baseline: "",
-          vehicleHeight: "",
-          vehicleWeight: "",
-          fuelType: "",
-          model: "",
-          vinNo: "",
-          fueltankc: "",
-        });
-        setSubmit(false);
-      }, 0);
-    });
+    console.log("errorsvalidations", formErrors);
+
+    if (Object.keys(formErrors).length === 0) {
+      const newTodo = {
+        id: todos.length + 1,
+        company: formvalue.baseline,
+        grouping: formvalue.assetType,
+        plateno: formvalue.plateno,
+        model: formvalue.model,
+        cargotype: formvalue.cargotype,
+        fueltype: formvalue.fueltype,
+        brand: formvalue.brand,
+        oem: parseInt(formvalue.vinNo),
+        gps: formvalue.fueltankc,
+        canbus: formvalue.fueltankc,
+      };
+      handleAddTodo(newTodo);
+      setFormvalue({
+        cargotype: "",
+        carring: "",
+        vehicleWidth: "",
+        assetType: "",
+        brand: "",
+        plateno: "",
+        baseline: "",
+        vehicleHeight: "",
+        vehicleWeight: "",
+        fueltype: "",
+        model: "",
+        vinNo: "",
+        fueltankc: "",
+        id: "",
+      });
+      setFormerror({});
+    }
   };
-  
 
   const validationform = (value) => {
     const errors = {
       cargotype: "Please Enter Cargo Type",
       carring: "Please Enter Carrying Capacity (tonnes)",
+      assetType: "Please select an asset type",
+      fueltype: "Please select a fuel type",
       vehicleWidth: "Please Enter Vehicle Width (mm)",
       brand: "Please Enter Brand",
-      vehiclepno: "Please Enter Vehicle Plate Number",
+      plateno: "Please Enter Vehicle Plate Number",
       baseline: "Please Enter Baseline Emission Factor (gCO₂/km)",
       vehicleHeight: "Please Enter Vehicle Height (mm)",
       vehicleWeight: "Please Enter Vehicle Weight (tonnes)",
@@ -113,29 +109,17 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
       vinNo: "Please Enter VIN Number",
       fueltankc: "Please Enter Fuel Tank Capacity (Litres)",
     };
-  
-    const selectErrors = {
-      assetType: "Please select an asset type",
-      fuelType: "Please select a fuel type",
-    };
-  
+
     const formErrors = {};
-  
     for (const field in errors) {
       if (!value[field]) {
         formErrors[field] = errors[field];
       }
     }
-  
-    for (const field in selectErrors) {
-      if (!value[field] || value[field] === "") {
-        formErrors[field] = selectErrors[field];
-      }
-    }
-  
+
     return formErrors;
   };
-  
+
   const assetTypeOption = [
     { value: "Vehicle", label: "Vehicle" },
     { value: "Equipment", label: "Equipment" },
@@ -159,28 +143,11 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
       modalElement.style.display = "none";
       document.body.classList.remove("modal-open");
     }
-
-    if (Object.keys(formerror).length === 0 && issubmit) {
-      console.log("formerror",formvalue);
-    }
-
-    // Update asset type error when form errors change
-    if (formerror.assetType && selectedAssetType === null) {
-      setAssetTypeError(formerror.assetType);
-    } else {
-      setAssetTypeError("");
-    }
-
-    // Update fuelType error when form errors change
-    if (formerror.fuelType && selectedFuelType === null) {
-      setFuelTypeError(formerror.fuelType);
-    } else {
-      setFuelTypeError("");
-    }
-    // },[showModal, formerror, formvalue, issubmit, selectedAssetType, selectedFuelType]);
-  }, [showModal, formerror, formvalue, issubmit]);
+  }, [showModal, formvalue, formerror]);
 
   const closeModal = () => {
+    setFormvalue(initialFormValues);
+    setFormerror({});
     handleModalClose();
   };
 
@@ -319,15 +286,20 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
                   </p>
                   <Select
                     classNamePrefix="my-custom-select"
+                    name="assetType"
                     styles={customStyles}
                     options={assetTypeOption}
-                    value={selectedAssetType}
-                    onChange={(selectedOption) =>
-                      setSelectedAssetType(selectedOption)
+                    value={
+                      formvalue.assetType !== ""
+                        ? assetTypeOption.find(
+                            (option) => option.value === formvalue.assetType
+                          )
+                        : null
                     }
+                    onChange={handleAssetTypeChange}
                   />
-                  {assetTypeError && (
-                    <span className="text-danger">*{assetTypeError}</span>
+                  {formerror.assetType && (
+                    <span className="text-danger">*{formerror.assetType}</span>
                   )}
                 </div>
                 <div className="pb-3">
@@ -358,12 +330,12 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
                     className="form-control"
                     style={defaultStyle}
                     placeholder="Vehicle Plate Number"
-                    name="vehiclepno"
-                    value={formvalue.vehiclepno}
+                    name="plateno"
+                    value={formvalue.plateno}
                     onChange={handlevalidation}
                   />
-                  {formerror.vehiclepno && (
-                    <span className="text-danger">*{formerror.vehiclepno}</span>
+                  {formerror.plateno && (
+                    <span className="text-danger">*{formerror.plateno}</span>
                   )}
                 </div>
                 <div className="pb-3">
@@ -427,15 +399,20 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
                   </p>
                   <Select
                     classNamePrefix="my-custom-select"
+                    name="fuelType"
                     styles={customStyles}
                     options={vehicleTypeOption}
-                    value={selectedFuelType}
-                    onChange={(selectedOption) =>
-                      setSelectedFuelType(selectedOption)
+                    value={
+                      formvalue.fueltype !== ""
+                        ? vehicleTypeOption.find(
+                            (option) => option.value === formvalue.fueltype
+                          )
+                        : null
                     }
+                    onChange={handleFuelTypeChange}
                   />
-                  {fuelTypeError && (
-                    <span className="text-danger">*{fuelTypeError}</span>
+                  {formerror.fueltype && (
+                    <span className="text-danger">*{formerror.fueltype}</span>
                   )}
                 </div>
                 <div className="pb-3">
@@ -482,6 +459,7 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
                     style={defaultStyle}
                     placeholder="Fuel Tank Capacity (Litres)"
                     name="fueltankc"
+                    value={formvalue.fueltankc}
                     onChange={handlevalidation}
                   />
                   {formerror.fueltankc && (
@@ -500,13 +478,13 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
             >
               Close
             </button>
-                <button
-                    type="button"
-                    onClick={handlesubmit}
-                    className="col-3 btn btn-success"
-                >
-                    Add
-                </button>
+            <button
+              type="button"
+              onClick={handlesubmit}
+              className="col-3 btn btn-success"
+            >
+              Add
+            </button>
           </div>
         </div>
       </div>
@@ -515,4 +493,3 @@ const AddVehicleModal = ({ handleModalClose, showModal, todos, handleAddTodo }) 
 };
 
 export default AddVehicleModal;
-

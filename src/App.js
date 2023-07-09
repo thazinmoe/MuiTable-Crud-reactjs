@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddVehicleIcon from "./Assets/Images/icons/car1.png";
 import CustomizedTables from './UnitsTable1';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -24,13 +24,13 @@ function App() {
     },
     {
       id: 2,
-      company: "DSV Air & Sea(Singapore)Pie Ltd",
+      company: "DSV Air & Sea(Singapore)Lion Ltd",
       grouping: "YQ9167H-1250728",
       plateno: "YQ9167H",
-      model: "FUSO Fighter FM65FM6RDEA",
-      cargotype: "Cargo",
-      fueltype: "Diesel",
-      brand: "Mitsubishi",
+      model: "FUSO Fighter FM65",
+      cargotype: "Not Type",
+      fueltype: "Petrol",
+      brand: "Honda fit",
       oem: 92,
       gps:  <CheckIcon style={{ color: "#02A619" }} />,
       canbus:  <CheckIcon style={{ color: "#02A619" }} />,
@@ -40,6 +40,22 @@ function App() {
   
   const [todos, setTodos] = useState(initialTodos);
   const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const inputHandleChange = (event) => {
+    //convert input text to lower case
+    // var lowerCase = event.target.value.toLowerCase();
+    // setSearchTerm(lowerCase);
+    // no convert input text
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    // handle search logic here
+    console.log(`Searching for ${searchTerm}...`);
+  };
+
   const handleModalOpen = () => {
     console.log("Modal opened");
     setShowModal(true);
@@ -51,6 +67,7 @@ function App() {
   };
 
   const handleAddTodo = (newTodo) => {
+    console.log('thisfinal==>',newTodo);
     setTodos((prevTodos) => [...prevTodos, newTodo]);
   };
 
@@ -62,7 +79,11 @@ function App() {
           Organisation : <img src={AddVehicleIcon} height="20px" />
         </h6>
       </div>
-      <CustomizedTables todos={todos}  handleModalOpen={handleModalOpen} />
+      <input type="text" value={searchTerm} onChange={inputHandleChange} />
+      <button onClick={handleSearchSubmit} type="submit">
+        Search
+      </button>
+      <CustomizedTables todos={todos}  handleModalOpen={handleModalOpen} input={searchTerm} />
       <AddVehicleModal
         handleModalClose={handleModalClose}
         showModal={showModal}
